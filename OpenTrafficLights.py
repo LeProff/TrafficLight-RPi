@@ -14,6 +14,7 @@ YELLOW = "yellow"
 RED = "red"
 PEDESTRIAN_GO = "pedestrian_go"
 PEDESTRIAN_STOP = "pedestrian_stop"
+ALL = "all"
 GREEN_RELAY_PIN = LED(4)
 YELLOW_RELAY_PIN = LED(17)
 RED_RELAY_PIN = LED(27)
@@ -72,6 +73,7 @@ def manage_traffic_lights(mode):
             time.sleep(3)
             YELLOW_RELAY_PIN.on()
             RED_RELAY_PIN.off()
+            PED_STOP_RELAY_PIN.on()
             PED_GO_RELAY_PIN.off()
             time.sleep(10)
             PED_GO_RELAY_PIN.on()
@@ -81,33 +83,10 @@ def manage_traffic_lights(mode):
     elif mode == SECRET:  # Make the lights randomly flash and dance quickly
         reset_lights()
         while True:
-            GREEN_RELAY_PIN.off()
-            PED_STOP_RELAY_PIN.on()
+            light = channels[random.randint(0, len(channels) - 1)]
+            light.off()
             time.sleep(0.5)
-            GREEN_RELAY_PIN.on()
-            YELLOW_RELAY_PIN.off()
-            time.sleep(0.5)
-            YELLOW_RELAY_PIN.on()
-            RED_RELAY_PIN.off()
-            PED_GO_RELAY_PIN.off()
-            time.sleep(0.5)
-            PED_GO_RELAY_PIN.on()
-            flashing_light(PED_STOP_RELAY_PIN, 5)
-            PED_STOP_RELAY_PIN.off()
-            RED_RELAY_PIN.on()
-            GREEN_RELAY_PIN.off()
-            time.sleep(0.5)
-            GREEN_RELAY_PIN.on()
-            YELLOW_RELAY_PIN.off()
-            time.sleep(0.5)
-            YELLOW_RELAY_PIN.on()
-            RED_RELAY_PIN.off()
-            PED_GO_RELAY_PIN.off()
-            time.sleep(0.5)
-            PED_GO_RELAY_PIN.on()
-            flashing_light(PED_STOP_RELAY_PIN, 5)
-            PED_STOP_RELAY_PIN.off()
-            RED_RELAY_PIN.on()
+            light.on()
     elif mode == GREEN:
         reset_lights()
         GREEN_RELAY_PIN.off()
@@ -122,6 +101,13 @@ def manage_traffic_lights(mode):
         PED_GO_RELAY_PIN.off()
     elif mode == PEDESTRIAN_STOP:
         reset_lights()
+        PED_STOP_RELAY_PIN.off()
+    elif mode == ALL:
+        reset_lights()
+        GREEN_RELAY_PIN.off()
+        YELLOW_RELAY_PIN.off()
+        RED_RELAY_PIN.off()
+        PED_GO_RELAY_PIN.off()
         PED_STOP_RELAY_PIN.off()
     else:
         print("[ERROR] Invalid Mode!")
@@ -261,38 +247,53 @@ if __name__ == '__main__':
                             traffic_process.terminate()
                             print("[INFO] Power Off!")
                         elif recieved == "1":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights, args=(PARALLEL,))
                             traffic_process.start()
                             print("[INFO] Parallel Lights!")
                         elif recieved == "2":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights,
                                                                       args=(PERPENDICULAR,))
                             traffic_process.start()
                             print("[INFO] Perpendicular Lights!")
                         elif recieved == "3":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights, args=(SECRET,))
                             traffic_process.start()
                             print("[INFO] Secret Lights!")
                         # No More Automatic Traffic Lights After This Line
                         elif recieved == "4":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights, args=(GREEN,))
                             traffic_process.start()
                             print("[INFO] Green Lights!")
                         elif recieved == "5":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights, args=(YELLOW,))
                             traffic_process.start()
@@ -305,19 +306,36 @@ if __name__ == '__main__':
                             traffic_process.start()
                             print("[INFO] Red Lights!")
                         elif recieved == "7":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights,
                                                                       args=(PEDESTRIAN_GO,))
                             traffic_process.start()
                             print("[INFO] Pedestrian Go!")
                         elif recieved == "8":
-                            if traffic_process.is_alive():
-                                traffic_process.terminate()
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
                             power = True
                             traffic_process = multiprocessing.Process(target=manage_traffic_lights,
                                                                       args=(PEDESTRIAN_STOP,))
+                            traffic_process.start()
+                            print("[INFO] Pedestrian Stop!")
+                        elif recieved == "9":
+                            try:
+                                if traffic_process.is_alive():
+                                    traffic_process.terminate()
+                            except UnboundLocalError:
+                                pass
+                            power = True
+                            traffic_process = multiprocessing.Process(target=manage_traffic_lights,
+                                                                      args=(ALL,))
                             traffic_process.start()
                             print("[INFO] Pedestrian Stop!")
                         # Reset Everything...
